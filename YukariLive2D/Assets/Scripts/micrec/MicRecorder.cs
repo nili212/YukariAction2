@@ -27,15 +27,15 @@ public class MicRecorder : MonoBehaviour
             _ => {
                 if (!nowrecord)
                     return;
-                float[] data = new float[1];
+                float[] data = new float[256];
                 float vol = 0;
-                source.GetOutputData(data, 0);
+
+                source.GetOutputData(data, 1);
                 for (int i = 0; i < data.Length; i++)
                 {
                     vol += Mathf.Abs(data[i]);
                 }
-                vol /= 1f;
-                Debug.Log(vol);
+                vol /= 256f;
                 if (vol >= 0.001f)
                     Debug.Log("volume:" + vol);
             }
@@ -62,11 +62,11 @@ public class MicRecorder : MonoBehaviour
         int minFreq, maxFreq;
         Microphone.GetDeviceCaps(Microphone.devices[drop.value], out minFreq, out maxFreq);
         source.clip = Microphone.Start(Microphone.devices[drop.value], true, 1, minFreq);
+
         source.loop = true;
         //audio.mute = true;
         
         while (!(Microphone.GetPosition(Microphone.devices[drop.value]) > 0)) { }
-
         source.Play();
 
         
